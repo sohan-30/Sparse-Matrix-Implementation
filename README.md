@@ -23,7 +23,8 @@ The sparse matrix uses three main node types:
 
 ### Element Node (`Sm_Node`)
 ```c
-typedef struct Sm_Node_Tag {
+typedef struct Sm_Node_Tag
+{
     matrix_entry data;           // The actual value
     int row, col;               // Position coordinates
     struct Sm_Node_Tag* right;  // Next element in same row
@@ -33,7 +34,8 @@ typedef struct Sm_Node_Tag {
 
 ### Row Header Node (`Row_Node`)
 ```c
-typedef struct Row_Node_Tag {
+typedef struct Row_Node_Tag
+{
     int row;                    // Row number
     Sm_Node* rowlist;          // First element in this row
     struct Row_Node_Tag* next; // Next row header
@@ -42,7 +44,8 @@ typedef struct Row_Node_Tag {
 
 ### Column Header Node (`Col_Node`)
 ```c
-typedef struct Col_Node_Tag {
+typedef struct Col_Node_Tag
+{
     int col;                    // Column number
     Sm_Node* collist;          // First element in this column
     struct Col_Node_Tag* next; // Next column header
