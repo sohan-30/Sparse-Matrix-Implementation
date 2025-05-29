@@ -88,10 +88,6 @@ Each non-zero element is connected in two directions:
 
 ### Compilation
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/sparse-matrix-c.git
-cd sparse-matrix-c
-
 # Compile the program
 gcc -o sparse_matrix sparse_matrix.c
 
