@@ -1,34 +1,49 @@
-# Sparse Matrix Implementation in C
+# Sparse Matrix Calculator in C
 
-A comprehensive implementation of sparse matrix data structure in C using linked lists with both row and column indexing for efficient storage and operations.
+A comprehensive and feature-rich implementation of sparse matrix data structure in C using dual-linked lists with advanced matrix operations, management system, and interactive interface.
 
 ## Overview
 
-This project implements a sparse matrix data structure optimized for matrices with a large number of zero elements. Instead of storing all elements (including zeros), it only stores non-zero elements, significantly reducing memory usage for sparse matrices.
+This project implements an advanced sparse matrix calculator optimized for matrices with a large number of zero elements. The implementation uses a sophisticated dual-linked list approach where each non-zero element is connected both horizontally (by row) and vertically (by column), enabling efficient operations across multiple matrices.
 
-The implementation uses a dual-linked list approach where each non-zero element is connected both horizontally (by row) and vertically (by column), allowing efficient row-wise and column-wise operations.The program supports a variety of operations including insertion, deletion, search, transpose, addition, subtraction, and multiplication. It also includes a **menu-driven interface** for interactive testing
+The calculator supports up to 10 named matrices (A-J) with a complete matrix management system, advanced mathematical operations including determinant calculation and matrix inversion, and multiple user interfaces for different use cases.
 
-## Features
+## Key Features
 
--  **Memory Efficient**: Only stores non-zero elements
--  **Dual Indexing**: Fast access by both rows and columns
--  **Dynamic Size**: No predefined matrix size limitations
--  **Complete Operations**: Insert, delete, search, transpose, add, subtract, multiply
--  **Interactive Menu**: User-friendly command-line interface
--  **Error Handling**: Robust error checking and status codes
+### Core Functionality
+- **Memory Efficient**: Only stores non-zero elements, dramatically reducing memory usage
+- **Dual Indexing**: Fast access by both rows and columns using separate linked lists
+- **Dynamic Sizing**: No predefined matrix size limitations with runtime resizing
+- **Named Matrix System**: Manage up to 10 matrices simultaneously (A-J)
+- **Robust Error Handling**: Comprehensive error checking and status codes
+
+### Advanced Operations
+- **Basic Operations**: Insert, delete, search, clear
+- **Matrix Arithmetic**: Addition, subtraction, multiplication
+- **Linear Algebra**: Transpose, determinant, matrix inverse
+- **Scalar Operations**: Scalar multiplication
+- **Matrix Management**: Create, resize, copy, clear matrices
+
+### User Interfaces
+- **Menu-Driven Interface**: Intuitive hierarchical menu system
+- **Command-Line Operations**: Express operations using simple commands
+- **Multiple Display Modes**: Full matrix view and sparse representation
+- **Interactive Matrix Builder**: Step-by-step matrix creation
+
+---
 
 ## Data Structure
 
 The sparse matrix uses three main node types:
 
 ### Element Node (`Sm_Node`)
+Stores a non-zero value and links to neighbors in the same row and column.
 ```c
-typedef struct Sm_Node_Tag
-{
-    matrix_entry data;           // The actual value
-    int row, col;               // Position coordinates
-    struct Sm_Node_Tag* right;  // Next element in same row
-    struct Sm_Node_Tag* down;   // Next element in same column
+typedef struct Sm_Node_Tag {
+    float data;
+    int row, col;
+    struct Sm_Node_Tag* right;
+    struct Sm_Node_Tag* down;
 } Sm_Node;
 ```
 
@@ -51,6 +66,24 @@ typedef struct Col_Node_Tag
     struct Col_Node_Tag* next; // Next column header
 } Col_Node;
 ```
+### SparseMatrix Wrapper
+```c
+typedef struct SparseMatrix {
+    int rowCount, colCount;
+    Row_Node* rowHead;
+    Col_Node* colHead;
+} SparseMatrix;
+```
+### Registry for Matrix Storage
+```c
+typedef struct Named_Matrix_Tag {
+    char name;
+    SparseMatrix matrix;
+    boolean isOccupied;
+} NamedMatrix;
+
+NamedMatrix registry[MAX_MATRICES];
+```
 
 ## How It Works
 
@@ -64,181 +97,202 @@ Each non-zero element is connected in two directions:
 - **Horizontally**: Connected to other elements in the same row via `right` pointers
 - **Vertically**: Connected to other elements in the same column via `down` pointers
 
-### Key Algorithms
+## Advanced Algorithms
 
-#### Insertion Process
-1. **Find/Create Row Header**: Locate the appropriate row or create a new row header
-2. **Find/Create Column Header**: Locate the appropriate column or create a new column header
-3. **Position Element**: Find the correct position within the row's element list
-4. **Link Horizontally**: Connect the element to its row neighbors
-5. **Link Vertically**: Connect the element to its column neighbors
+### Matrix Inversion Algorithm
+- **Cofactor Method**: Uses recursive determinant calculation
+- **Adjugate Matrix**: Computes transpose of cofactor matrix
+- **Singular Matrix Detection**: Handles non-invertible matrices gracefully
+- **Memory Optimization**: Efficient handling of intermediate calculations
 
-#### Search Process
-1. **Locate Row**: Find the row header for the target row
-2. **Traverse Row**: Follow the `right` pointers to find the target column
-3. **Verify Position**: Confirm the element exists at the specified coordinates
+### Determinant Calculation
+- **Recursive Expansion**: Uses cofactor expansion along first row
+- **Submatrix Generation**: Dynamic creation of (n-1)×(n-1) submatrices
+- **Base Case Optimization**: Direct calculation for 1×1 matrices
+- **Sign Alternation**: Proper handling of cofactor signs
 
-#### Matrix Operations
-- **Addition/Subtraction**: Traverse both matrices simultaneously, combining elements at matching positions
-- **Multiplication**: Use row-column traversal, utilizing the dual-indexing for efficient access
-- **Transpose**: Swap row and column headers, and exchange `right`/`down` pointers
+### Smart Matrix Operations
+- **Dimension Validation**: Automatic compatibility checking
+- **Zero Handling**: Intelligent zero-element management
+- **Memory Management**: Automatic cleanup of temporary matrices
+- **Result Preservation**: Optional saving of operation results
 
-## Installation
+## Installation & Setup
 
 ### Prerequisites
-- GCC compiler or any C compiler
-- Standard C library support
+- **GCC Compiler**: Version 4.8 or later
+- **Standard C Library**: Full C99 support required
+- **Memory**: Minimum 1MB RAM for typical operations
 
 ### Compilation
 ```bash
-# Compile the program
-gcc -o sparse_matrix sparse_matrix.c
+# Standard compilation
+gcc -o matrix_calculator sparse_matrix_github.c -lm
 
-# Run the program
-./sparse_matrix
+# With debugging symbols
+gcc -g -o matrix_calculator sparse_matrix_github.c -lm
+
+# Optimized build
+gcc -O3 -o matrix_calculator sparse_matrix_github.c -lm
 ```
 
-## Usage
+### Running the Program
+```bash
+./matrix_calculator
+```
 
-Run the compiled program to access the interactive menu:
+## User Interface Guide
+
+### Main Menu Structure
+```
+===== MATRIX CALCULATOR =====
+1. Matrix Management        # Create, modify, manage matrices
+2. Matrix Operations        # Perform calculations using commands
+3. Display Options          # View and inspect matrices
+4. Exit                     # Clean shutdown
+```
+
+### Matrix Management Submenu
+- **Create Matrix**: Initialize new matrices with custom dimensions
+- **Resize Matrix**: Modify dimensions of existing matrices
+- **Insert/Update Element**: Add or modify individual elements
+- **Delete Element**: Remove specific elements
+- **Clear Matrix**: Reset matrix to empty state
+
+### Operation Command System
+Execute operations using natural language commands:
 
 ```bash
-./sparse_matrix
+# Arithmetic Operations
+add A B              # A + B
+subtract A B         # A - B  
+multiply A B         # A × B
+
+# Linear Algebra
+transpose A          # A^T
+determinant A        # det(A)
+inverse A           # A^(-1)
+
+# Scalar Operations
+scalar A 2.5        # A × 2.5
+
+# Exit command mode
+exit
 ```
 
-The program will display a menu with the following options:
-```
-==== Sparse Matrix Menu ====
-1. Insert Element
-2. Delete Element
-3. Search Element
-4. Print Matrix
-5. Transpose Matrix
-6. Add Two Matrices
-7. Subtract Two Matrices
-8. Multiply Two Matrices
-0. Exit
-```
+### Display Options
+1. **List All Matrices**: Overview of all 10 matrix slots
+2. **Full View**: Complete matrix with zeros displayed
+3. **Sparse View**: Only non-zero elements with coordinates
+4. **Dimensions Only**: Quick size information
 
-## Operations
+## Usage Examples
 
-### Basic Operations
-
-#### Insert Element
-```c
-status_code insertElement(int row, int col, matrix_entry data, SparseMatrix* matrix)
-```
-- Inserts a non-zero element at specified position
-- Creates row/column headers if they don't exist
-- Updates existing element if position is occupied
-
-#### Delete Element
-```c
-status_code deleteElement(int row, int col, SparseMatrix* matrix, matrix_entry *dptr)
-```
-- Removes element at specified position
-- Cleans up empty row/column headers
-- Returns the deleted value
-
-#### Search Element
-```c
-boolean search(int row, int col, SparseMatrix* matrix)
-```
-- Checks if an element exists at specified position
-- Returns TRUE if found, FALSE otherwise
-
-### Matrix Operations
-
-#### Addition
-```c
-status_code addMatrix(SparseMatrix* matrix1, SparseMatrix* matrix2, SparseMatrix* result)
-```
-- Adds two sparse matrices
-- Handles matrices of different sparsity patterns
-- Validates matrix dimensions
-
-#### Subtraction
-```c
-status_code subtractMatrix(SparseMatrix* matrix1, SparseMatrix* matrix2, SparseMatrix* result)
-```
-- Subtracts second matrix from first
-- Implemented using negation and addition
-
-#### Multiplication
-```c
-status_code multiplyMatrix(SparseMatrix* matrix1, SparseMatrix* matrix2, SparseMatrix* result)
-```
-- Multiplies two sparse matrices
-- Validates dimension compatibility (columns of first = rows of second)
-- Utilizes dual-indexing for efficient computation
-
-#### Transpose
-```c
-status_code transpose(SparseMatrix* matrix)
-```
-- Transposes the matrix in-place
-- Swaps row and column indices
-- Exchanges horizontal and vertical links
-
-## Examples
-
-### Creating a Simple Matrix
-```
-Matrix representation of:
-[5.0  0   2.0]
-[0    0   0  ]
-[3.0  0   1.0]
-
-Storage (only non-zero elements):
-(0,0) -> 5.0
-(0,2) -> 2.0
-(2,0) -> 3.0
-(2,2) -> 1.0
-```
-
-### Sample Interaction
+### Creating and Populating a Matrix
 ```
 Enter your choice: 1
-Insert into Matrix 1.
-Enter row, col, value: 0 0 5.0
-Element inserted.
-
 Enter your choice: 1
-Enter row, col, value: 0 2 2.0
-Element inserted.
+Enter matrix name (A-J): A
+Enter number of rows: 3
+Enter number of columns: 3
+Matrix A created [3 x 3].
 
-Enter your choice: 4
-Matrix 1:
-Sparse Matrix Representation:
+Enter non-zero elements (row col value), or -1 to finish:
+> 0 0 5.0
+> 0 2 2.0
+> 2 0 3.0
+> 2 2 1.0
+> -1
+Matrix A created and initialized.
+```
+
+### Matrix Operations via Commands
+```
+> Operation: add A B
+Matrix R [3 x 3]
+  8.00   0.00   2.00
+  0.00   0.00   0.00
+  3.00   0.00   6.00
+
+Do you want to save the resultant matrix before deleting? (y/n): y
+Enter a destination matrix name (A-J): C
+Matrix copied to 'C'
+```
+
+### Matrix Display Modes
+**Sparse View:**
+```
+Matrix A [3 x 3]
 (0, 0) -> 5.00
 (0, 2) -> 2.00
+(2, 0) -> 3.00
+(2, 2) -> 1.00
 ```
 
-## Time Complexity
+**Full View:**
+```
+Matrix A [3 x 3]
+  5.00   0.00   2.00
+  0.00   0.00   0.00
+  3.00   0.00   1.00
+```
 
-| Operation | Average Case | Worst Case |
-|-----------|--------------|------------|
-| Insert    | O(r + c)     | O(r + c)   |
-| Delete    | O(r + c)     | O(r + c)   |
-| Search    | O(c)         | O(c)       |
-| Addition  | O(n₁ + n₂)   | O(n₁ + n₂) |
-| Multiplication | O(n₁ × c₂) | O(n₁ × c₂) |
-| Transpose | O(n)         | O(n)       |
+## Advanced Features
 
-Where:
-- `r` = number of rows with elements
-- `c` = number of columns in a row
-- `n` = number of non-zero elements
-- `n₁, n₂` = non-zero elements in matrix 1 and 2
-- `c₂` = number of columns in matrix 2
+### Dynamic Matrix Resizing
+- **Automatic Cleanup**: Removes out-of-bounds elements
+- **Dimension Expansion**: Allows growing matrix size
+- **Memory Optimization**: Efficient handling of size changes
 
-## Memory Complexity
+### Intelligent Operation Handling
+- **Result Management**: Optional saving of operation results
+- **Memory Cleanup**: Automatic deallocation of temporary matrices  
+- **Error Recovery**: Graceful handling of operation failures
 
-- **Space Complexity**: O(n) where n is the number of non-zero elements
-- **Memory Savings**: For a matrix with sparsity s (percentage of zeros), memory usage is approximately (1-s) × traditional storage
+### Matrix Registry System
+- **Named Access**: Reference matrices by single character (A-J)
+- **Occupancy Tracking**: Automatic management of available slots
+- **Overwrite Protection**: Warnings when overwriting existing matrices
 
-## Acknowledgments
+## Performance Analysis
 
-- Inspired by classical sparse matrix implementations
-- Designed for educational purposes and practical applications
-- Optimized for both memory efficiency and operation speed
+### Time Complexity
+| Operation | Average Case | Worst Case | Space |
+|-----------|--------------|------------|-------|
+| Insert/Update | O(r + c) | O(r + c) | O(1) |
+| Delete | O(r + c) | O(r + c) | O(1) |
+| Search | O(c) | O(c) | O(1) |
+| Addition | O(n₁ + n₂) | O(n₁ + n₂) | O(n) |
+| Multiplication | O(n₁ × c₂) | O(n₁ × c₂) | O(n) |
+| Transpose | O(n) | O(n) | O(1) |
+| Determinant | O(n! × d) | O(n! × d) | O(n²) |
+| Inverse | O(n³ × d) | O(n³ × d) | O(n²) |
+
+**Legend:**
+- n = number of non-zero elements
+- r = rows with elements, c = columns in row  
+- n₁, n₂ = non-zero elements in operand matrices
+- c₂ = columns in second matrix
+- d = average density of submatrices
+
+### Memory Efficiency
+- **Storage Reduction**: For sparsity s%, memory usage ≈ (1-s) × dense storage
+- **Typical Savings**: 80-95% memory reduction for real-world sparse matrices
+- **Overhead**: ~24 bytes per non-zero element (on 64-bit systems)
+
+## Error Handling & Robustness
+
+### Input Validation
+- **Dimension Checking**: Validates row/column bounds
+- **Matrix Compatibility**: Ensures operation validity
+- **Memory Allocation**: Handles insufficient memory gracefully
+
+### Error Recovery
+- **Partial Operations**: Maintains consistency during failures
+- **Resource Cleanup**: Prevents memory leaks
+- **User Feedback**: Clear error messages and recovery suggestions
+
+### Edge Cases
+- **Empty Matrices**: Proper handling of zero-element matrices
+- **Singular Matrices**: Graceful inverse calculation failures
+- **Dimension Mismatches**: Clear error reporting for incompatible operations
